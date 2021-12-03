@@ -3,10 +3,12 @@ import { ctx } from "../store/main";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Error from "./Error";
+import Cookie from "./Cookie";
+import Form from "./Form";
+import LoadingIndicator from "./LoadingIndicator";
 
 export interface meetingType {
   title: string;
-  id: string;
   platform: string;
   date: string;
   participants: number;
@@ -15,22 +17,37 @@ export interface meetingType {
 }
 
 export interface ctxType {
-  meetings: meetingType[];
+  meetings: {
+    [key: string]: meetingType;
+  };
   error: boolean;
+  editing: {
+    id: string;
+  } & meetingType;
+  setEditing: (state: any) => {};
   setError: (state: any) => {};
+  setReload: (state: boolean) => {};
 }
 
 function App() {
   const [meetings, setMeetings] = useState([]);
   const [error, setError] = useState(false);
   const [errorDismissed, setErrorDismissed] = useState(false);
+  const [cookieConsent, setCookieConsent] = useState(false);
+  const [editing, setEditing] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [reload, setReload] = useState(true);
 
   const fetchData = useCallback(async () => {
+    setLoading(true);
+
     const res = await axios.get(
       "https://problem-fb593-default-rtdb.firebaseio.com/meetings.json?print=pretty"
     );
 
-    if (res?.data || res?.status === 200) {
+    setLoading(false);
+
+    if (res?.data?.meetings || res?.status === 200) {
       return res.data;
     }
 
@@ -38,19 +55,25 @@ function App() {
   }, []);
 
   useEffect(() => {
-    fetchData().then((data) => {
-      if (!data) {
-        setError(true);
-      }
-      setMeetings(data);
-    });
-  }, [fetchData]);
+    if (reload === true) {
+      fetchData().then((data) => {
+        if (!data) {
+          setError(true);
+        } else {
+          setMeetings(data);
+        }
+      });
+      setReload(false);
+    }
+  }, [fetchData, reload]);
 
   return (
     <div className="App">
       <ctx.Provider
         value={{
           meetings,
+          editing,
+          setReload,
           error,
           setError: (state: boolean) => {
             if (state === false) {
@@ -63,11 +86,20 @@ function App() {
               setError(true);
             }
           },
+          setEditing,
         }}
       >
+        <Form />
         <List />
         {error && <Error />}
-
+        {!cookieConsent && (
+          <Cookie
+            onClick={() => {
+              setCookieConsent(true);
+            }}
+          />
+        )}
+        {loading && <LoadingIndicator />}
       </ctx.Provider>
     </div>
   );

@@ -1,42 +1,54 @@
-import { useContext, useCallback } from "react";
+import React, { useContext, useCallback } from "react";
 import { ctx } from "../store/main";
 import { useState } from "react";
-import { ctxType, meetingType } from "./App";
+import { ctxType } from "./App";
 import styled from "styled-components";
 import Modal from "./Modal";
 
 export default function List() {
   const store = useContext(ctx) as ctxType;
-  const [modalVis, setModalVis] = useState(true);
+  const [modalVis, setModalVis] = useState(false);
+  const indexMeetings = Object.entries(store.meetings);
 
   const mapMeetings = useCallback(
     () =>
-      store.meetings.map((meeting: meetingType) => {
-        if (!meeting?.title || !meeting?.id) {
+      indexMeetings.map((element: any[]) => {
+        const id = element[0];
+        const meeting = element[1];
+
+        if (!meeting?.title || !id) {
           store.setError(true);
           return;
         }
-        const { title, platform, date, participants, id, time, description } =
-          meeting;
+
         return (
           <li key={id}>
-            <p>{title}</p>
+            <p>{meeting.title}</p>
             <button onClick={() => setModalVis(true)}>Details</button>
+            <button onClick={store.setEditing.bind(null, { ...meeting, id })}>
+              Edit
+            </button>
             {modalVis && (
-              <Modal
-                {...{ participants, title, platform, date, time, description }}
-                onClose={() => setModalVis(false)}
-              />
+              <Modal {...meeting} onClose={() => setModalVis(false)} />
             )}
           </li>
         );
       }),
-    [store, modalVis]
+    [store, modalVis, indexMeetings]
   );
 
   return (
     <Wrapper>
-      <ul>{store?.meetings ? mapMeetings() : store.setError(true)}</ul>
+      <ul>
+        {((): any => {
+          if (store?.meetings) {
+            return mapMeetings();
+          }
+
+          store.setError(true);
+          return <div></div>;
+        })()}
+      </ul>
     </Wrapper>
   );
 }
@@ -68,8 +80,6 @@ const Wrapper = styled.section`
       width: 6rem;
       height: 3rem;
       margin-right: 20px;
-
-
     }
     button:hover {
       transform: scale(1.1);

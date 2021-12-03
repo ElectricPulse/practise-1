@@ -1,14 +1,13 @@
 import ReactDom from "react-dom";
 import styled from "styled-components";
 import { meetingType } from "./App";
-import icon from '../icons/close.svg'
+import icon from "../icons/close.svg";
 
 interface props {
   onClose: () => void;
 }
 
 function Modal(props: Omit<meetingType, "id"> & props) {
-
   return ReactDom.createPortal(
     <Wrapper>
       <div className="backdrop" />
@@ -52,10 +51,9 @@ function Modal(props: Omit<meetingType, "id"> & props) {
 
 const Wrapper = styled.div`
   .backdrop {
-    display: fixed;
-    position: absolute;
+    position: fixed;
     inset: 0;
-    z-index: 1;
+    z-index: 1000;
     backdrop-filter: blur(5px);
     background-color: #0000003e;
   }
@@ -64,7 +62,7 @@ const Wrapper = styled.div`
     display: flex;
     position: fixed;
     justify-content: space-between;
-    z-index: 2;
+    z-index: 2000;
     width: 900px;
     height: 500px;
     background-color: white;
@@ -87,13 +85,11 @@ const Wrapper = styled.div`
       }
     }
 
-    button:hover{
+    button:hover {
       cursor: pointer;
-
     }
 
-
-     > div {
+    > div {
       display: flex;
       flex-direction: column;
 
