@@ -1,10 +1,10 @@
-import List from "./List";
 import { ctx } from "../store/main";
 import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Error from "./Error";
 import Cookie from "./Cookie";
 import Form from "./Form";
+import List from "./List";
 import LoadingIndicator from "./LoadingIndicator";
 
 export interface meetingType {
@@ -17,15 +17,15 @@ export interface meetingType {
 }
 
 export interface ctxType {
+  error: boolean;
+  setError: (state: any) => {};
   meetings: {
     [key: string]: meetingType;
   };
-  error: boolean;
   editing: {
     id: string;
   } & meetingType;
   setEditing: (state: any) => {};
-  setError: (state: any) => {};
   setReload: (state: boolean) => {};
 }
 
@@ -47,59 +47,49 @@ function App() {
 
     setLoading(false);
 
-    if (res?.data?.meetings || res?.status === 200) {
-      return res.data;
-    }
-
+    if (res?.status === 200) return res.data;
     return undefined;
   }, []);
 
   useEffect(() => {
     if (reload === true) {
       fetchData().then((data) => {
-        if (!data) {
-          setError(true);
-        } else {
-          setMeetings(data);
-        }
+        if (!data) setError(true);
+        else setMeetings(data);
       });
       setReload(false);
     }
   }, [fetchData, reload]);
 
+  const store = {
+    meetings,
+    editing,
+    error,
+    setError: (state: boolean) => {
+      if (state === false) {
+        setErrorDismissed(true);
+        setError(false);
+        return;
+      }
+
+      if (errorDismissed === false) {
+        setError(true);
+      }
+    },
+    setEditing,
+    setReload,
+  };
+
   return (
     <div className="App">
-      <ctx.Provider
-        value={{
-          meetings,
-          editing,
-          setReload,
-          error,
-          setError: (state: boolean) => {
-            if (state === false) {
-              setErrorDismissed(true);
-              setError(false);
-              return;
-            }
-
-            if (errorDismissed === false) {
-              setError(true);
-            }
-          },
-          setEditing,
-        }}
-      >
+      <ctx.Provider value={store}>
         <Form />
         <List />
         {error && <Error />}
-        {!cookieConsent && (
-          <Cookie
-            onClick={() => {
-              setCookieConsent(true);
-            }}
-          />
-        )}
         {loading && <LoadingIndicator />}
+        {!cookieConsent && (
+          <Cookie onClick={setCookieConsent.bind(null, true)} />
+        )}
       </ctx.Provider>
     </div>
   );

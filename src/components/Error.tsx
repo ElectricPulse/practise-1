@@ -7,11 +7,11 @@ function Error() {
   const store = useContext(ctx) as ctxType;
   return (
     <Wrapper>
-      <div>
-        <p>Error</p>
-        <p>Something went wrong</p>
+      <div className="overview">
+        <p className="primaryText">Error</p>
+        <p className="subText">Something went wrong</p>
       </div>
-      <div>
+      <div className="details">
         <p>Try again</p>
         <button
           onClick={() => {
@@ -26,50 +26,41 @@ function Error() {
 }
 
 const Wrapper = styled.div`
-  display: inline-block;
   padding: 11px;
   position: fixed;
   bottom: 5%;
   left: 50%;
   right: 50%;
+  transform: translateX(-50%);
   display: flex;
   flex-direction: column;
   gap: 30px;
-  font-family: "Open Sans";
-  font-weight: 400;
-  font-size: 1.1rem;
   background: linear-gradient(#d45659 60%, white 50% 100%);
   box-shadow: 2rem 2rem 2rem #00000018;
-  transform: translateX(-50%);
   width: 500px;
 
-  p {
-    margin: 0;
+  .primaryText {
+    font-size: 2rem;
+    font-weight: 300;
+    border-bottom: 2px solid #d34f51;
   }
-  div:first-child {
+
+  .overview {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    p:first-child {
-      font-size: 2rem;
-      font-weight: 300;
-      border-bottom: 2px solid #d34f51;
-    }
     color: white;
+    gap: 10px;
   }
-  div:last-child {
+
+  .details {
     display: flex;
     justify-content: space-between;
   }
 
   button {
-    border: 0;
-    border-radius: 5px;
     color: white;
     background-color: #cf585a;
     padding: 0.5rem 2rem;
-    font-family: "Open Sans";
-    font-weight: 500;
     font-size: 1rem;
     transition: all 0.2s;
   }

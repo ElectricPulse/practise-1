@@ -13,7 +13,7 @@ function Modal(props: Omit<meetingType, "id"> & props) {
       <div className="backdrop" />
       <div className="modal">
         <button onClick={props.onClose}>
-          <img src={icon} />
+          <img src={icon} alt="cross" />
         </button>
         <div>
           <div>
@@ -58,6 +58,12 @@ const Wrapper = styled.div`
     background-color: #0000003e;
   }
 
+  .description {
+    font-weight: 500;
+    font-size: 1.2rem;
+    max-width: 600px;
+  }
+
   .modal {
     display: flex;
     position: fixed;
@@ -71,18 +77,17 @@ const Wrapper = styled.div`
     transform: translate(-50%, -50%);
     padding: 30px 80px;
     border-radius: 10px;
-    box-shadow: 2rem 2rem 2rem #0000001f;
-
-    button {
-      position: absolute;
-      top: 1rem;
-      right: 1rem;
-      border: 0;
-      background-color: transparent;
-      img {
-        width: 45px;
-        height: 45px;
-      }
+    box-shadow: 2rem 2rem 2rem #000000;
+  }
+  button {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    border: 0;
+    background-color: transparent;
+    img {
+      width: 45px;
+      height: 45px;
     }
 
     button:hover {
@@ -94,25 +99,15 @@ const Wrapper = styled.div`
       flex-direction: column;
 
       gap: 2.5rem;
-
-      .description {
-        font-weight: 500;
-        font-size: 1.2rem;
-        max-width: 600px;
-      }
     }
 
     p {
-      margin: 0;
-      font-family: "Open Sans";
       font-weight: 400;
       color: #5e5e5e;
       font-size: 1.2rem;
     }
 
     h3 {
-      margin: 0;
-      font-family: "Open Sans";
       font-weight: 400;
       font-size: 1.8rem;
     }

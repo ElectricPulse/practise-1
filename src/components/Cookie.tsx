@@ -1,5 +1,6 @@
 import ReactDom from "react-dom";
 import styled from "styled-components";
+import STYLES from "../utils/styles";
 
 interface props {
   onClick: () => void;
@@ -20,33 +21,33 @@ function Cookie(props: props) {
 }
 
 const Wrapper = styled.div`
-  position: fixed;
-  bottom: 1rem;
-  width: 100vw;
-  padding: 0.1rem 20rem;
-  z-index: 1000;
-  background-color: white;
-  border-top: 2px solid #f3f3f3;
   display: flex;
+  position: fixed;
   justify-items: space-between;
   align-items: center;
+  bottom: 0;
+  width: 100vw;
+  padding: 0.1rem 20rem;
+  background-color: white;
+  border-top: 2px solid #f3f3f3;
+  z-index: 1000;
+
   p {
-    width: 1000px;
+    max-width: 70rem;
   }
+
   button {
-    border: 0;
     color: white;
-    box-shadow: 1rem 1rem 1rem #1a1a1a53;
+    box-shadow: ${STYLES.shadow};
     padding: 0.8rem 1.3rem;
-    font-family: "open sans";
     font-weight: 600;
-    background-color: #048464;
+    background-color: ${STYLES.primary};
     border-radius: 5px;
     font-size: 1rem;
     transition: all 0.2s;
   }
   button:hover {
-    background-color: #024e3b;
+    background-color: ${STYLES.primaryDark};
     text-decoration: underline;
   }
 `;
